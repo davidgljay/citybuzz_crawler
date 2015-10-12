@@ -1,7 +1,7 @@
 
 var gcloud = require('gcloud')({
   projectId: 'climatescrape-1019',
-  keyFilename: 'climatescrape-40defa45d085.json'
+  keyFilename: 'climatescrape_key.json'
 });
 
 var pubsub = gcloud.pubsub({

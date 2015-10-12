@@ -4,8 +4,8 @@ PubSub = require('./pubsub'),
 Deferred = require("promised-io").Deferred;;
 
 var crawler = new Crawl(),
-cleanPubSub = new PubSub('cityscan_url_unique','all'),
-rawPubSub = new PubSub('cityscan_url_raw','all');
+cleanPubSub = new PubSub('cityscan_url_unique','unique'),
+rawPubSub = new PubSub('cityscan_url_raw','raw');
 
 cleanPubSub.subscription.on('message', function(message) {
 	console.log("Message:" + message.data);
@@ -26,15 +26,13 @@ cleanPubSub.subscription.on('message', function(message) {
 
 var publishUrls = function (data) {
 	var deferred = new Deferred();
-	console.log("publishing:" + JSON.stringify(data));
 	var newUrlMessages = [];
 	// var deferred = new Deferred();
 	if (data.urls) {
-		console.log("Found urls!");
 		for (var i = data.urls.length - 1; i >= 0; i--) {
 			newUrlMessages.push({
 				data: {
-					domain:message.domain,
+					domain:data.domain,
 					path:data.urls[i],
 					tags:[]
 				}
@@ -45,7 +43,7 @@ var publishUrls = function (data) {
 			if (err) {
 				deferred.reject(err);
 			} else {
-				deferred.resolve(message.ackId);
+				deferred.resolve(data.ackId);
 			};
 		});
 	} else {

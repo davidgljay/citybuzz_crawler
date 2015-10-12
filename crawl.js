@@ -9,19 +9,22 @@ var Crawl = function() {
 
 
 Crawl.prototype.get = function(message) {
-	console.log("Getting: " + message.data.domain + message.data.path);
-	var deferred = new Deferred();
-	// var spliturl=/([^\/]+)(\/{1}.+)/.exec(url);
-
 	if (message == null || message.data == undefined || message.data.domain == undefined || message.data.path == undefined) {
 		deferred.reject("Not a valid domain:" + domain +" or path:" + path);
-	}
+	};
+
+	var deferred = new Deferred(),
+	domain = message.data.domain,
+	path = message.data.path;
+	// var spliturl=/([^\/]+)(\/{1}.+)/.exec(url);
+
+
 
 	var options = {
 	    port: 80,
-	    hostname: message.data.domain,
+	    hostname: domain,
 	    method: 'GET',
-	    path: message.data.path
+	    path: path
 	  };
 
 	http.request(options, function(res) {
@@ -29,10 +32,13 @@ Crawl.prototype.get = function(message) {
 		res.on('data', function(chunk) {
 			body += chunk;
 		});
-		res.on('end', function(data) {
+		res.on('end', function() {
 			//TODO: handle PDFs
+			var parsedUrls = parseUrls(body);
+			var cleanedUrls = cleanUrls(parsedUrls, domain, path);
 			deferred.resolve(
 				{
+					domain:domain,
 					urls: parseUrls(body),
 					body: unfluff(body.toString('utf-8'),'en'),
 					ackId: message.ackId
@@ -47,19 +53,20 @@ Crawl.prototype.get = function(message) {
 
 var parseUrls = function(body) {
 	var re = /<a\s[^>]*href="([^"]*)">/gim;
-	var matches,links = [];
+	var matches,urls = [];
 	while (matches=re.exec(body)) {
-		links.push(matches[1]);
+		urls.push(matches[1]);
 	}
+	return urls;
 };
 
-var cleanUrls = function(urls) {
+var cleanUrls = function(urls, domain, path) {
 	var cleanUrls = [];
 	//Put URLs into a consistent format.
 	for (var i = urls.length - 1; i >= 0; i--) {
 		if (urls[i][0] != "/") {
-			if (urls[i].substr(0,url.length+7)=="http://" + url) {
-				cleanUrls.push(urls[i].substr(url.length+7,urls[i].length))
+			if (urls[i].substr(0,domain.length+7)=="http://" + domain) {
+				cleanUrls.push(urls[i].substr(domain.length+7,urls[i].length))
 			};
 		} else {
 			cleanUrls.push(urls[i]);
