@@ -9,7 +9,8 @@ var pubsub = gcloud.pubsub({
 });
 
 var PubSub = function(topic, subscription) {
-	this.subscription = pubsub.topic('cityscan_url').subscription('all');
+	this.topic = pubsub.topic(topic)
+	this.subscription = this.topic.subscription(subscription);
 };
 
 module.exports = PubSub;

@@ -2,22 +2,26 @@ var http = require('http'),
 unfluff = require('unfluff'),
 PubSub = require('./pubsub'),
 Deferred = require('promised-io').Deferred,
-logger = require('../logger.js');
+logger = require('./logger.js');
 
 var Crawl = function() {
 };
 
 
-Crawl.prototype.get = function(url) {
-
+Crawl.prototype.get = function(message) {
+	console.log("Getting: " + message.data.domain + message.data.path);
 	var deferred = new Deferred();
-	var spliturl=/([^\/]+)(\/{1}.+)/.exec(url);
+	// var spliturl=/([^\/]+)(\/{1}.+)/.exec(url);
 
-	this.options = {
+	if (message == null || message.data == undefined || message.data.domain == undefined || message.data.path == undefined) {
+		deferred.reject("Not a valid domain:" + domain +" or path:" + path);
+	}
+
+	var options = {
 	    port: 80,
-	    hostname: spliturl[1],
+	    hostname: message.data.domain,
 	    method: 'GET',
-	    path: spliturl[2]
+	    path: message.data.path
 	  };
 
 	http.request(options, function(res) {
@@ -30,13 +34,14 @@ Crawl.prototype.get = function(url) {
 			deferred.resolve(
 				{
 					urls: parseUrls(body),
-					body: unfluff(body.toString('utf-8'),'en');
+					body: unfluff(body.toString('utf-8'),'en'),
+					ackId: message.ackId
 				});
 		})
 	}, function(err) {
-		deferred.reject("Error in crawl get: " + err);
-	});
-	req.end();
+		deferred.reject(err);
+	}).end();
+
 	return deferred.promise; 
 }
 
@@ -46,7 +51,7 @@ var parseUrls = function(body) {
 	while (matches=re.exec(body)) {
 		links.push(matches[1]);
 	}
-}
+};
 
 var cleanUrls = function(urls) {
 	var cleanUrls = [];
@@ -71,4 +76,6 @@ var cleanUrls = function(urls) {
 	};
 
 	return dedupedUrls;
-}
+};
+
+module.exports = Crawl;
