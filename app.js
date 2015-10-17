@@ -1,82 +1,85 @@
-rvar Crawl = require('./crawl'),
-logger = require('./logger'),
-PubSub = require('./pubsub'),
+var Crawl = require('./crawl'),
 Deferred = require("promised-io").Deferred,
+process_urls = require('./process_urls');
 count=0;
 
-var crawler = new Crawl(),
-cleanPubSub = new PubSub('cityscan_url_unique','unique'),
-rawPubSub = new PubSub('cityscan_url_raw','raw');
+var crawler = this.crawler = new Crawl();
+this.process_urls = process_urls;
 
-cleanPubSub.subscription.on('message', function(message) {
+module.exports.handler = function(event, context) {
+	var self=this;
+	var message= this.message = event.records.Sns.Message;
+	crawler.get(message.domain, message.path)
+	.then(process_urls.dedupe_urls, reportError('get'));
+}
 
-	if (message.data.domain && message.data.path) {
-		if (count==100) {
-			count=0;
-			logger.info("Checking:" + message.data.domain + message.data.path);
-		}
-		count++;
+// cleanPubSub.subscription.on('message', function(message) {
+
+// 	if (message.data.domain && message.data.path) {
+// 		if (count==100) {
+// 			count=0;
+// 			console.log("Checking:" + message.data.domain + message.data.path);
+// 		}
+// 		count++;
 		
-		crawler.get(message)
-		.then(publishUrls, reportError('get'))
-		.then(ackMessage, reportError('publishUrls'))
-		.then(function() {
-		},reportError('ackMessage'));		
-	} else {
-		message.ack();
-	}
-	//TODO: add saving. Do this through pubsub? There should be a way to run it and publishurls in parellel...
+// 		crawler.get(message)
+// 		.then(publishUrls, reportError('get'))
+// 		.then(ackMessage, reportError('publishUrls'))
+// 		.then(function() {
+// 		},reportError('ackMessage'));		
+// 	} else {
+// 		message.ack();
+// 	}
+// 	//TODO: add saving. Do this through pubsub? There should be a way to run it and publishurls in parellel...
 
-	});
-
-
-var publishUrls = function (data) {
-	var deferred = new Deferred();
-	var newUrlMessages = [];
-	// var deferred = new Deferred();
-	if (data.urls) {
-		for (var i = data.urls.length - 1; i >= 0; i--) {
-			newUrlMessages.push({
-				data: {
-					domain:data.domain,
-					path:data.urls[i],
-					tags:[]
-				}
-			});
-		};
-
-		rawPubSub.topic.publish(newUrlMessages, function(err, messageIds, apiResponse) {
-			if (err) {
-				deferred.reject(err);
-			} else {
-				deferred.resolve(data.ackId);
-			};
-		});
-	} else {
-		// logger.info("No urls present");
-		deferred.resolve(data.ackId);
-	}
+// 	});
 
 
-	return deferred.promise;
-};
+// var prepUrls = this.prepurls = function (data) {
+// 	var deferred = new Deferred();
+// 	var newUrlMessages = this.newUrlMessages = [];
+// 	// var deferred = new Deferred();
+// 	if (data.urls) {
+// 		for (var i = data.urls.length - 1; i >= 0; i--) {
+// 			newUrlMessages.push({
+// 					domain:data.domain,
+// 					path:data.urls[i],
+// 					tags:[]
+// 			});
+// 		};
 
-var ackMessage = function(ackId) {
-	var deferred = new Deferred();
-	cleanPubSub.subscription.ack(ackId, function(err, response) {
-		if (err) {
-			deferred.reject(err);
-		} else {
-			deferred.resolve();
-		}
-	})
-	return deferred.promise;
-};
+// 		// rawPubSub.topic.publish(newUrlMessages, function(err, messageIds, apiResponse) {
+// 		// 	if (err) {
+// 		// 		deferred.reject(err);
+// 		// 	} else {
+// 		// 		deferred.resolve(data.ackId);
+// 		// 	};
+// 		};
+// 		deferred.resolve(newUrlMessages);
+
+// 		return deferred.promise;
+// 	};
+
+
+// 	return deferred.promise;
+// };
+
+// var ackMessage = function(ackId) {
+// 	var deferred = new Deferred();
+// 	cleanPubSub.subscription.ack(ackId, function(err, response) {
+// 		if (err) {
+// 			deferred.reject(err);
+// 		} else {
+// 			deferred.resolve();
+// 		}
+// 	})
+// 	return deferred.promise;
+// };
 
 var reportError = function(tag) {
 	return function(err) {
-		// logger.error(tag + ": " + err);		
-		logger.error(tag + ": " + err);
+		// console.error(tag + ": " + err);		
+		console.error(tag + ": " + err);
 	};
 };
 
