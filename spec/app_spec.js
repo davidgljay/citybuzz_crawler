@@ -3,15 +3,13 @@ Deferred = require('promised-io').Deferred,
 mocks=require("./mocks");
 
 describe("App", function() {
-	var get_path, 
-	get_domain, 
+	var get_message, 
 	urls_deduped, 
 	messages_published;
 	beforeEach(function() {
-		app.crawler.get =  function(d, p) {
+		app.crawler.get =  function(message) {
 				var deferred = new Deferred();
-				get_path = p;
-				get_domain = d;
+				get_message = message;
 				deferred.resolve(mocks.crawler_response);
 				return deferred.promise;
 			}
@@ -36,8 +34,7 @@ describe("App", function() {
 
 	it ("should fetch the url in the message", function() {
 		app.handler(mocks.event);
-		expect(get_domain).toBe("www.stuff.com");
-		expect(get_path).toBe("/things");
+		expect(get_message).toBe(mocks.event.records.Sns.Message);
 	})
 
 	it ("should dedupe URLs after receiving them", function() {
