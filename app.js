@@ -1,20 +1,26 @@
-var Crawl = require('./crawl'),
+rvar Crawl = require('./crawl'),
 logger = require('./logger'),
 PubSub = require('./pubsub'),
-Deferred = require("promised-io").Deferred;;
+Deferred = require("promised-io").Deferred,
+count=0;
 
 var crawler = new Crawl(),
 cleanPubSub = new PubSub('cityscan_url_unique','unique'),
 rawPubSub = new PubSub('cityscan_url_raw','raw');
 
 cleanPubSub.subscription.on('message', function(message) {
-	console.log("Message:" + message.data);
+
 	if (message.data.domain && message.data.path) {
+		if (count==100) {
+			count=0;
+			logger.info("Checking:" + message.data.domain + message.data.path);
+		}
+		count++;
+		
 		crawler.get(message)
 		.then(publishUrls, reportError('get'))
 		.then(ackMessage, reportError('publishUrls'))
 		.then(function() {
-			console.log("Completed " + message.data.path);
 		},reportError('ackMessage'));		
 	} else {
 		message.ack();
@@ -47,7 +53,7 @@ var publishUrls = function (data) {
 			};
 		});
 	} else {
-		console.log("No urls present");
+		// logger.info("No urls present");
 		deferred.resolve(data.ackId);
 	}
 
@@ -70,7 +76,7 @@ var ackMessage = function(ackId) {
 var reportError = function(tag) {
 	return function(err) {
 		// logger.error(tag + ": " + err);		
-		console.log(tag + ": " + err);
+		logger.error(tag + ": " + err);
 	};
 };
 
