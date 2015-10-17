@@ -3,7 +3,10 @@ Deferred = require('promised-io').Deferred,
 mocks=require("./mocks");
 
 describe("App", function() {
-	var get_path, get_domain, urls_deduped, messages_posted;
+	var get_path, 
+	get_domain, 
+	urls_deduped, 
+	messages_published;
 	beforeEach(function() {
 		app.crawler.get =  function(d, p) {
 				var deferred = new Deferred();
@@ -20,8 +23,10 @@ describe("App", function() {
 		};
 		app.process_urls.publish_urls = function(urls) {
 			var deferred = new Deferred();
-			urls_posted=true;
+			messages_published=true;
 		}
+		messages_published = false;
+		urls_deduped = false;
 	});
 
 	it("should receive an event", function() {
@@ -37,11 +42,11 @@ describe("App", function() {
 
 	it ("should dedupe URLs after receiving them", function() {
 		app.handler(mocks.event);
-		expect(urls_deduped).toBeTruthy;
+		expect(urls_deduped).toBe(true);
 	});
 
 	it ("should post new URLs after deduping them", function() {
 		app.handler(mocks.event);
-		expect(urls_deduped).toBeTruthy;
+		expect(messages_published).toBe(true);
 	});
 });

@@ -10,7 +10,8 @@ module.exports.handler = function(event, context) {
 	var self=this;
 	var message= this.message = event.records.Sns.Message;
 	crawler.get(message.domain, message.path)
-	.then(process_urls.dedupe_urls, reportError('get'));
+	.then(process_urls.dedupe_urls, reportError('get'))
+	.then(process_urls.publish_urls, reportError('dedupe'));
 }
 
 // cleanPubSub.subscription.on('message', function(message) {
