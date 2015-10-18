@@ -8,15 +8,11 @@
   },
   "dependencies": {
     "promised-io":"^0.3.5",
-    "winston":"^1.0.1",
-    "winston-papertrail":"^1.0.1",
     "htmlstrip-native": "^0.1.1",
     "unfluff":"^0.11.0",
     "async":"1.2.1",
-    "firebase":"^2.2.7",
-    "mysql":"2.8.0",
     "underscore":"^1.8.3",
-    "gcloud":"0.23.0"
+    "nock":"2.15.0"
   },
   "author": "David Jay",
   "license": "MIT"

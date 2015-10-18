@@ -1,21 +1,20 @@
 var http = require('http'),
 unfluff = require('unfluff'),
-PubSub = require('./pubsub'),
-Deferred = require('promised-io').Deferred,
-logger = require('./logger.js');
+Deferred = require('promised-io').Deferred;
 
 var Crawl = function() {
+	this.http = http;
 };
 
-
 Crawl.prototype.get = function(message) {
-	if (message == null || message.data == undefined || message.data.domain == undefined || message.data.path == undefined) {
-		deferred.reject("Not a valid domain:" + domain +" or path:" + path);
-	};
 
 	var deferred = new Deferred(),
-	domain = message.data.domain,
-	path = message.data.path;
+	domain = message.domain,
+	path = message.path;
+
+	if (message == null || message.domain == undefined || message.path == undefined) {
+		deferred.reject("Not a valid domain:" + domain +" or path:" + path);
+	};
 	// var spliturl=/([^\/]+)(\/{1}.+)/.exec(url);
 
 
@@ -36,12 +35,14 @@ Crawl.prototype.get = function(message) {
 			//TODO: handle PDFs
 			var parsedUrls = parseUrls(body);
 			var cleanedUrls = cleanUrls(parsedUrls, domain, path);
+			var unfluffed = unfluff(body.toString('utf-8'),'en');
 			deferred.resolve(
 				{
 					domain:domain,
 					urls: parseUrls(body),
-					body: unfluff(body.toString('utf-8'),'en'),
-					ackId: message.ackId
+					title: unfluffed.title,
+					body: unfluffed.text,
+					message:message
 				});
 		})
 	}, function(err) {

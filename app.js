@@ -1,5 +1,4 @@
 var Crawl = require('./crawl'),
-Deferred = require("promised-io").Deferred,
 process_urls = require('./process_urls');
 count=0;
 
@@ -9,7 +8,7 @@ this.process_urls = process_urls;
 module.exports.handler = function(event, context) {
 	var self=this;
 	var message= this.message = event.records.Sns.Message;
-	crawler.get(message.domain, message.path)
+	crawler.get(message)
 	.then(process_urls.dedupe_urls, reportError('get'))
 	.then(process_urls.publish_urls, reportError('dedupe'));
 }
