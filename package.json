@@ -12,7 +12,9 @@
     "unfluff":"^0.11.0",
     "async":"1.2.1",
     "underscore":"^1.8.3",
-    "nock":"2.15.0"
+    "nock":"2.15.0",
+    "dynamodb":"0.3.6",
+    "aws-sdk":"^2.2.10"
   },
   "author": "David Jay",
   "license": "MIT"
