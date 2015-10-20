@@ -22,5 +22,52 @@ mocks.event = {
 		}
 	}
 
+mocks.urls = [
+	"www.stuff.and/things",
+	"www.things.and/stuff",
+	"www.another.url/forfun"
+]
+
+mocks.batchGetParams = {
+    RequestItems: {
+        citybuzz_urls: {
+            Keys: [
+                {
+                    reading_url: { S: 'www.stuff.and/things' },
+                },
+                {
+                    reading_url: { S: 'www.things.and/stuff' },
+                },
+                {
+                    reading_url: { S: 'www.another.url/forfun' },
+                }
+            ],
+            AttributesToGet: [
+                'reading_url'
+            ],
+            ConsistentRead: true
+        }
+    },
+    ReturnConsumedCapacity: 'NONE'
+}
+
+mocks.batchGetResponse = {
+  "Responses": {
+    "citybuzz_urls": [
+      {
+        "reading_url": {
+          "S": "www.stuff.and/things"
+        }
+	  },
+	  {
+        "reading_url": {
+          "S": "www.things.and/stuff"
+        }
+      }
+    ]
+  },
+  "UnprocessedKeys": {}
+}
+
 
 module.exports = mocks;

@@ -1,5 +1,6 @@
 var Crawl = require('./crawl'),
-process_urls = require('./process_urls');
+process_urls = require('./process_urls'),
+logger=require('./logger.js');
 count=0;
 
 var crawler = this.crawler = new Crawl();
@@ -9,8 +10,8 @@ module.exports.handler = function(event, context) {
 	var self=this;
 	var message= this.message = event.records.Sns.Message;
 	crawler.get(message)
-	.then(process_urls.dedupe_urls, reportError('get'))
-	.then(process_urls.publish_urls, reportError('dedupe'));
+	.then(process_urls.dedupe_urls, logger.reportError('get'))
+	.then(process_urls.publish_urls, logger.reportError('dedupe'));
 }
 
 // cleanPubSub.subscription.on('message', function(message) {
@@ -75,11 +76,4 @@ module.exports.handler = function(event, context) {
 // 	})
 // 	return deferred.promise;
 // };
-
-var reportError = function(tag) {
-	return function(err) {
-		// console.error(tag + ": " + err);		
-		console.error(tag + ": " + err);
-	};
-};
 

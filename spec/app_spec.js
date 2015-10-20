@@ -5,7 +5,8 @@ mocks=require("./mocks");
 describe("App", function() {
 	var get_message, 
 	urls_deduped, 
-	messages_published;
+	messages_published,
+	old_process_urls;
 	beforeEach(function() {
 		app.crawler.get =  function(message) {
 				var deferred = new Deferred();
@@ -13,6 +14,7 @@ describe("App", function() {
 				deferred.resolve(mocks.crawler_response);
 				return deferred.promise;
 			}
+		old_process_urls = app.process_urls;
 		app.process_urls.dedupe_urls = function(urls) {
 			var deferred = new Deferred();
 			urls_deduped=true;
@@ -26,6 +28,10 @@ describe("App", function() {
 		messages_published = false;
 		urls_deduped = false;
 	});
+
+	afterEach(function() {
+		app.process_urls = old_process_urls;
+	})
 
 	it("should receive an event", function() {
 		app.handler(mocks.event);
