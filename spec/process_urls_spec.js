@@ -9,7 +9,7 @@ describe("Process_urls module", function() {
 		beforeEach(function() {
 			calledBatchGetItem=false;
 			calledBatchWriteItem = false;
-			process_urls = require('../process_urls');
+			process_urls = require('../dedupe');
 			process_urls.dynamodb.batchGetItem = function(params, callback) {
 					calledBatchGetItem = true;
 					callback(null, mocks.batchGetResponse);

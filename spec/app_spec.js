@@ -47,9 +47,4 @@ describe("App", function() {
 		app.handler(mocks.event);
 		expect(urls_deduped).toBe(true);
 	});
-
-	it ("should post new URLs after deduping them", function() {
-		app.handler(mocks.event);
-		expect(messages_published).toBe(true);
-	});
 });

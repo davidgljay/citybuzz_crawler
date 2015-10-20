@@ -87,5 +87,9 @@ mocks.batchPutParams = {
     ReturnItemCollectionMetrics: 'NONE'
 };
 
+mocks.snsPublishParams = {
+  Message: '{"domain":"www.another.url","path":"/forfun"}',
+  TopicArn: 'arn:aws:sns:us-east-1:663987893806:citybuzz_urls'
+};
 
 module.exports = mocks;

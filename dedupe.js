@@ -32,9 +32,9 @@ module.exports.dedupe_urls = function(urls) {
 	//Wait until the batch is 
 	all(promiseArray).then(
 		function(new_urls) {
+			//TODO: handle consistent formatting and make sure to pass on message.
 			deferred.resolve(_.flatten(new_urls));
 		}, logger.reportError('dedupePromiseArray'))
-
 	return deferred.promise;
 }
 
