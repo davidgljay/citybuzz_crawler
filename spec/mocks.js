@@ -69,5 +69,23 @@ mocks.batchGetResponse = {
   "UnprocessedKeys": {}
 }
 
+mocks.batchPutParams = {
+    RequestItems:{
+       citybuzz_urls:[ 
+           {
+           PutRequest:{
+               Item: {
+                    reading_url: { 
+                      S: 'www.another.url/forfun'
+                    }
+               }
+              }
+           }
+        ]
+    },
+    ReturnConsumedCapacity: 'NONE',
+    ReturnItemCollectionMetrics: 'NONE'
+};
+
 
 module.exports = mocks;

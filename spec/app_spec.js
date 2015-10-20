@@ -31,7 +31,7 @@ describe("App", function() {
 
 	afterEach(function() {
 		app.process_urls = old_process_urls;
-	})
+	});
 
 	it("should receive an event", function() {
 		app.handler(mocks.event);
