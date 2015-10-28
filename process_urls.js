@@ -3,7 +3,8 @@ AWS = require('aws-sdk'),
 async = require('async'),
 logger = require('./logger.js'),
 Deferred = require('promised-io').Deferred,
-all = require("promised-io/promise").all;
+all = require("promised-io/promise").all,
+_ = require("underscore");
 
 
 //TODO: Renam file back to process_urls
@@ -21,7 +22,7 @@ module.exports.process_urls = function(urls, message) {
 		//Divide urls into batches of 100 and check them for diplucates.
 		var url_batch = url_copy.splice(0,99);
 		promiseArray.push(
-			checkUrlBatch(url_batch)
+			checkUrlBatch(url_batch, message.whitelist)
 			.then(postUrlBatch, logger.reportError('checkUrlBatch'))
 			.then(function(unique_url_batch) {
 				var tinyDeferred = new Deferred();
@@ -40,8 +41,15 @@ module.exports.process_urls = function(urls, message) {
 	return deferred.promise;
 }
 
-var checkUrlBatch = this.checkUrlBatch = function(url_batch) {
+var checkUrlBatch = this.checkUrlBatch = function(url_batch, whitelist) {
 	var deferred = new Deferred;
+
+	//Only keep URLs that match the whitelist condition
+	url_batch = _.filter(url_batch, function(url) {
+		return checkWhitelist(url, whitelist);
+	});
+
+	//Check urls against the DB of urls already being checked.
 	dynamodb.batchGetItem(getParams(url_batch), function(err, data) {
 		if (err) {
 			deferred.reject("Get in Dedupe error:" + err);

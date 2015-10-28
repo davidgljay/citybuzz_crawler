@@ -11,18 +11,18 @@ mocks.crawler_response = {
 mocks.domain = "www.stuff.com";
 mocks.path = "/things";
 
+mocks.whitelist ={
+                "www.stuff.and":["/things", "/morestuff"],
+                "www.things.and":["/stuff", "/morethings"],
+                "www.another.url":["/forfun"]
+            };
 mocks.event = {
 		records: {
 			Sns: {
 				Message: {
 					domain:mocks.domain,
 					path:mocks.path,
-          whitelist: 
-            {
-              "www.stuff.and":["/things", "/morestuff"],
-              "www.things.and":["/stuff", "/morethings"]
-            }
-          ,
+          whitelist: mocks.whitelist,
           tags: [
             {"stuffies":/imaregex/}
           ]

@@ -27,7 +27,7 @@ describe("Process_urls module", function() {
 			})
 
 			it ("should make a batchGetItems call.", function(done) {
-				process_urls.checkUrlBatch(mocks.urls).then(
+				process_urls.checkUrlBatch(mocks.urls, mocks.whitelist).then(
 					function(result) {
 						expect(calledBatchGetItem).toBe(true);
 						done();
@@ -35,7 +35,7 @@ describe("Process_urls module", function() {
 			})	
 
 			it ("should return urls that are not yet present.", function(done) {
-				process_urls.checkUrlBatch(mocks.urls).then(
+				process_urls.checkUrlBatch(mocks.urls, mocks.whitelist).then(
 					function(result) {
 						expect(calledBatchGetItem).toBe(true);
 						expect(result[0]).toBe('www.another.url/forfun');
@@ -80,18 +80,13 @@ describe("Process_urls module", function() {
 
 	describe("check_urls", function() {
 		describe ("should check urls against a whitelist", function() {
-				//TODO:Figure out what whitelist I'm passing with the URLS.
-				//domain:
-				//path:
-				//whitelist:[domain:[paths]]
-				//tags:[term:"regex", term:"regex"]
 
 			it ("should accept a valid URL", function() {
 				expect(process_urls.checkWhitelist(mocks.urls[1], mocks.event.records.Sns.Message.whitelist)).toBe(true);
 			})
 
 			it("should reject an invalid URL", function() {
-
+				expect(process_urls.checkWhitelist("http://not.a.valid/url", mocks.event.records.Sns.Message.whitelist)).toBe(false);
 			})
 
 		})
