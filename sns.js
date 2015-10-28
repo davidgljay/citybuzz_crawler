@@ -5,6 +5,7 @@ all = require("promised-io/promise").all;
 var SNS = this.SNS = new AWS.SNS({apiVersion: '2010-03-31'});
 
 module.exports.publishUrls = function(urls,message) {
+	//TODO: split url
 	var deferred = new Deferred(),
 	promiseArray = [];
 	for (var i=0; i<urls.length; i++) {

@@ -16,7 +16,16 @@ mocks.event = {
 			Sns: {
 				Message: {
 					domain:mocks.domain,
-					path:mocks.path
+					path:mocks.path,
+          whitelist: 
+            {
+              "www.stuff.and":["/things", "/morestuff"],
+              "www.things.and":["/stuff", "/morethings"]
+            }
+          ,
+          tags: [
+            {"stuffies":/imaregex/}
+          ]
 				}
 			}
 		}

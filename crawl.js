@@ -17,6 +17,7 @@ Crawl.prototype.get = function(message) {
 	};
 	// var spliturl=/([^\/]+)(\/{1}.+)/.exec(url);
 
+	//TODO: handle different URL formats.
 
 
 	var options = {

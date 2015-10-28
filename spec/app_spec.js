@@ -15,7 +15,7 @@ describe("App", function() {
 				return deferred.promise;
 			}
 		old_process_urls = app.process_urls;
-		app.process_urls.dedupe_urls = function(urls) {
+		app.process_urls.process_urls = function(urls) {
 			var deferred = new Deferred();
 			urls_deduped=true;
 			deferred.resolve(urls);

@@ -3,13 +3,13 @@ Deferred = require('promised-io').Deferred,
 mocks=require('./mocks');
 
 describe("Process_urls module", function() {
-	describe ("dedupe_urls function", function() {
+	describe ("process_url function", function() {
 		var calledBatchGetItem, calledBatchWriteItem;
 
 		beforeEach(function() {
 			calledBatchGetItem=false;
 			calledBatchWriteItem = false;
-			process_urls = require('../dedupe');
+			process_urls = require('../process_urls');
 			process_urls.dynamodb.batchGetItem = function(params, callback) {
 					calledBatchGetItem = true;
 					callback(null, mocks.batchGetResponse);
@@ -69,13 +69,32 @@ describe("Process_urls module", function() {
 
 		describe("overall", function() {
 			it("should return a list of new urls", function(done) {
-				process_urls.dedupe_urls(mocks.urls).then(
+				process_urls.process_urls(mocks.urls, mocks.event.records.Sns.Message).then(
 					function(result) {
 						expect(result[0]).toBe('www.another.url/forfun');
 						done();
 					})
 			})
 		})	
+	});
+
+	describe("check_urls", function() {
+		describe ("should check urls against a whitelist", function() {
+				//TODO:Figure out what whitelist I'm passing with the URLS.
+				//domain:
+				//path:
+				//whitelist:[domain:[paths]]
+				//tags:[term:"regex", term:"regex"]
+
+			it ("should accept a valid URL", function() {
+				expect(process_urls.checkWhitelist(mocks.urls[1], mocks.event.records.Sns.Message.whitelist)).toBe(true);
+			})
+
+			it("should reject an invalid URL", function() {
+
+			})
+
+		})
 	})
 
 });
