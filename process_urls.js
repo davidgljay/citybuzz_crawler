@@ -7,8 +7,6 @@ all = require("promised-io/promise").all,
 _ = require("underscore");
 
 
-//TODO: Renam file back to process_urls
-//TODO: Add seperate file for checking that URLS match whitelist conditions
 var dynamodb = this.dynamodb = new AWS.DynamoDB({apiVersion: '2015-02-02'})
 
 module.exports.process_urls = function(urls, message) {

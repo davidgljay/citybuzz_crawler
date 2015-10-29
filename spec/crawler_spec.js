@@ -16,7 +16,7 @@ describe("Crawler", function() {
 
 	it("should crawl stuff.", function(done) {
 		var response = crawler.get(mocks.event.records.Sns.Message);
-		response.then(function(res) {
+		response.then(function(res, message) {
 			expect(res.title).toBe('Just another page');
 			expect(res.body).toBe('This is a mock page with a  link');
 			expect(res.urls[0]).toBe('www.testlink.com/alink/tostuff');

@@ -1,7 +1,8 @@
 var Crawl = require('./crawl'),
 process_urls = require('./process_urls'),
 logger=require('./logger.js');
-sns=require('./sns.js')
+sns=require('./api/sns.js'),
+all = require("promised-io/promise").all,
 count=0;
 
 var crawler = this.crawler = new Crawl();
@@ -15,8 +16,11 @@ module.exports.handler = function(event, context) {
 	var self=this;
 	var message= this.message = event.records.Sns.Message;
 	crawler.get(message)
-	.then(process_urls.process_urls, logger.reportError('get'))
-	.then(sns.publish_urls, logger.reportError('process_urls'))
+	.then(function(crawl) {
+		all([
+				processAndPostUrls(crawl.urls, crawl.message)
+			], logger.reportError('url and body processing'))
+	}, logger.reportError('crawl'))
 	.then(function() {
 		context.succeed();
 	}, function(err) {
@@ -24,3 +28,11 @@ module.exports.handler = function(event, context) {
 	});
 };
 
+var processAndPostUrls = function(urls, message) {
+	return process_urls.process_urls(urls, message)
+		.then(sns.publish_urls, logger.reportError('process_urls'))
+}
+
+var processAndPostBody = function(title, body, message) {
+	
+}

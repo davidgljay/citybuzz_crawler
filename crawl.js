@@ -15,9 +15,6 @@ Crawl.prototype.get = function(message) {
 	if (message == null || message.domain == undefined || message.path == undefined) {
 		deferred.reject("Not a valid domain:" + domain +" or path:" + path);
 	};
-	// var spliturl=/([^\/]+)(\/{1}.+)/.exec(url);
-
-	//TODO: handle different URL formats.
 
 
 	var options = {
@@ -40,7 +37,7 @@ Crawl.prototype.get = function(message) {
 			deferred.resolve(
 				{
 					domain:domain,
-					urls: parseUrls(body),
+					urls: cleanedUrls,
 					title: unfluffed.title,
 					body: unfluffed.text,
 					message:message
@@ -66,12 +63,11 @@ var cleanUrls = function(urls, domain, path) {
 	var cleanUrls = [];
 	//Put URLs into a consistent format.
 	for (var i = urls.length - 1; i >= 0; i--) {
-		if (urls[i][0] != "/") {
-			if (urls[i].substr(0,domain.length+7)=="http://" + domain) {
-				cleanUrls.push(urls[i].substr(domain.length+7,urls[i].length))
-			};
+		if (urls[i][0] == "/")  {
+			cleanUrls.push(domain + urls[i]);
 		} else {
-			cleanUrls.push(urls[i]);
+			var re = /[^http:\/\/].+/
+			cleanUrls.push(re.exec(urls[i])[0])
 		}
 	};
 
