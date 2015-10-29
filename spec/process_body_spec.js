@@ -10,6 +10,10 @@ describe("Process_body", function() {
 	})
 
 	it ("should look for tags based on a string", function() {
+
+	})
+
+	it ("should return body and tags in the proper format", function() {
 		
 	})
 })
