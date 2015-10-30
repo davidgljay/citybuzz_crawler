@@ -30,7 +30,7 @@ module.exports.handler = function(event, context) {
 };
 
 var processAndPostUrls = function(urls, message) {
-	return process_urls.process_urls(urls, message)
+	return process_urls.process(urls, message)
 		.then(sns.publish_urls, logger.reportError('process_urls'))
 }
 

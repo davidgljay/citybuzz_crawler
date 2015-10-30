@@ -9,7 +9,7 @@ _ = require("underscore");
 
 var dynamodb = this.dynamodb = new AWS.DynamoDB({apiVersion: '2015-02-02'})
 
-module.exports.process_urls = function(urls, message) {
+module.exports.process = function(urls, message) {
 
 	var deferred = new Deferred();
 	var promiseArray = [],

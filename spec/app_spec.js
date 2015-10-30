@@ -15,12 +15,12 @@ describe("App", function() {
 				return deferred.promise;
 			}
 		old_process_urls = app.process_urls;
-		app.process_urls.process_urls = function(urls) {
-			var deferred = new Deferred();
-			urls_deduped=true;
-			deferred.resolve(urls);
-			return deferred.promise;
-		};
+		// app.process_urls.process = function(urls) {
+		// 	var deferred = new Deferred();
+		// 	urls_deduped=true;
+		// 	deferred.resolve(urls);
+		// 	return deferred.promise;
+		// };
 		app.process_urls.publish_urls = function(urls) {
 			var deferred = new Deferred();
 			messages_published=true;
@@ -43,8 +43,8 @@ describe("App", function() {
 		expect(get_message).toBe(mocks.event.records.Sns.Message);
 	})
 
-	it ("should dedupe URLs after receiving them", function() {
-		app.handler(mocks.event);
-		expect(urls_deduped).toBe(true);
-	});
+	// it ("should dedupe URLs after receiving them", function() {
+	// 	app.handler(mocks.event);
+	// 	expect(urls_deduped).toBe(true);
+	// });
 });

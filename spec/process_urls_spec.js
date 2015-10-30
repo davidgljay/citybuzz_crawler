@@ -69,7 +69,7 @@ describe("Process_urls module", function() {
 
 		describe("overall", function() {
 			it("should return a list of new urls", function(done) {
-				process_urls.process_urls(mocks.urls, mocks.event.records.Sns.Message).then(
+				process_urls.process(mocks.urls, mocks.event.records.Sns.Message).then(
 					function(result) {
 						expect(result[0]).toBe('www.another.url/forfun');
 						done();
