@@ -1,11 +1,19 @@
-
-
+var get_tags = this.get_tags = function(body, tags) {
+	var tag_list = [];
+	for (tag in tags) {
+		if (typeof tags[tag] == 'string' && body.includes(tags[tag])) {
+			tag_list.push(tag);
+		} else if (typeof tags[tag] == 'object' && tags[tag].exec(body)) {
+			//TODO: figure out how to test if this object is a regex.
+			tag_list.push(tag);
+		}
+	}
+	return tag_list;
+}
 
 var get_date = this.get_date = function(body) {
 
-	//How do I want to do this? 
-	//Use the big regex to match the first date
-	//Then go through the different regexes to craft the actual date
+	//TODO: Add different variation of wordy date (ie "December 3rd, December third");
 	var first_date_re = /([0-31]{0,2}\/[0-31]{0,2}\/\d{0,4})|((jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[^ ]* [0-31]{0,2}(rd|st|th)*, \d{4})|(\d{4}-[0-12]{0,2}-[0-31]{0,2})|(([0-31]{0,2}(rd|st|th)*)|first|second|third|fourth|fifth|sixth|seventh|eight|ninth|tenth|eleventh|twelvth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteeenth|nineteenth|twentieth|twenty first|twenty second|twenty third|twenty fourth|twenty fifth|twenty sixth|twenty seventh|twenty eigth|twenty ninth|thirtieth|thirty first) of (jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[^ ]*, \d{4}/gi
 	var num_date_re = 	/([0-12]{1,2})(?:\/|\.|-)([0-31]){1,2}(?:\/|\.|-)(\d{4})/;
 	var iso_date_re = /(\d{4})-([0-12]{1,2})-([0-31]{1,2})/;

@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "jasmine-node --autotest ./ ./spec"
+    "test": "jasmine-node --autotest ./"
   },
   "dependencies": {
     "promised-io":"^0.3.5",

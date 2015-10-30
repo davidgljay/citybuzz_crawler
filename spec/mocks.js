@@ -23,9 +23,10 @@ mocks.event = {
 					domain:mocks.domain,
 					path:mocks.path,
           whitelist: mocks.whitelist,
-          tags: [
-            {"stuffies":/imaregex/}
-          ]
+          tags:
+            {"stuffies":/imaregex/,
+        	"taggy":"imastring"}
+          
 				}
 			}
 		}
