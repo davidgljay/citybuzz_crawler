@@ -1,4 +1,11 @@
-var get_tags = this.get_tags = function(body, tags) {
+module.exports = function(body, tags) {
+	return {
+		tags: get_tags(body,tags),
+		first_date: get_date(body)
+	};
+};
+
+var get_tags = module.exports.get_tags = function(body, tags) {
 	var tag_list = [];
 	for (tag in tags) {
 		if (typeof tags[tag] == 'string' && body.includes(tags[tag])) {
@@ -9,9 +16,9 @@ var get_tags = this.get_tags = function(body, tags) {
 		}
 	}
 	return tag_list;
-}
+};
 
-var get_date = this.get_date = function(body) {
+var get_date = module.exports.get_date = function(body) {
 
 	//TODO: Add different variation of wordy date (ie "December 3rd, December third");
 	var first_date_re = /([0-31]{0,2}\/[0-31]{0,2}\/\d{0,4})|((jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[^ ]* [0-31]{0,2}(rd|st|th)*, \d{4})|(\d{4}-[0-12]{0,2}-[0-31]{0,2})|(([0-31]{0,2}(rd|st|th)*)|first|second|third|fourth|fifth|sixth|seventh|eight|ninth|tenth|eleventh|twelvth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteeenth|nineteenth|twentieth|twenty first|twenty second|twenty third|twenty fourth|twenty fifth|twenty sixth|twenty seventh|twenty eigth|twenty ninth|thirtieth|thirty first) of (jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[^ ]*, \d{4}/gi
