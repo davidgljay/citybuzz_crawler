@@ -1,8 +1,31 @@
-var process_body = require('../process_body');
+var process_body = require('../process_body'),
+mocks = require('./mocks');
 
 describe("Process_body", function() {
-	it ("should extract a first date", function() {
+	describe("first date", function() {
+		it ("should extract a first date in formal format", function() {
+			expect(process_body.get_date(mocks.body)).toEqual(new Date(2015,11,3));
+		})
 
+		it ("should extract a first date in verbose format", function() {
+			var body = "Stuff will go down on the third of december, 2015."
+			expect(process_body.get_date(body)).toEqual(new Date(2015,11,3));
+		})
+
+		it ("should extract a first date in numeric format", function() {
+			var body="Stuff will go down on 12/03/2015"
+			expect(process_body.get_date(body)).toEqual(new Date(2015,11,3));
+		})
+
+		it ("should extract a first date in ISO format", function() {
+			var body = "Stuff will go down on 2015-12-03"
+			expect(process_body.get_date(body)).toEqual(new Date(2015,11,3));
+		})
+
+		it ("should return null when there is no date", function() {
+			var body ="Stuff will go down, but I don't know when";
+			expect(process_body.get_date(body)).toBe(null);
+		})
 	})
 
 	it ("should look for tags based on a regex", function() {

@@ -11,6 +11,7 @@ this.process_urls = process_urls;
 //TODO: Add separate process for pulling keytag items (ie first date, press release, etc.)
 //TODO: Add function for saving to dynamoDB.
 //TODO: Add function for saving to SQL.
+//TODO: Remove camelCase
 
 module.exports.handler = function(event, context) {
 	var self=this;

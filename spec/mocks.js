@@ -101,4 +101,6 @@ mocks.snsPublishParams = {
   TopicArn: 'arn:aws:sns:us-east-1:663987893806:citybuzz_urls'
 };
 
+mocks.body="Dec 3rd, 2015   FOR IMMEDIATE RELEASE The mayor of funkytown is getting down."
+
 module.exports = mocks;
