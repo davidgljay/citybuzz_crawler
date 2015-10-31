@@ -24,7 +24,7 @@ describe("Process_body", function() {
 
 		it ("should return null when there is no date", function() {
 			var body ="Stuff will go down, but I don't know when";
-			expect(process_body.get_date(body)).toBe(null);
+			expect(process_body.get_date(body)).toEqual('');
 		})
 	})
 

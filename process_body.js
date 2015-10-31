@@ -28,7 +28,7 @@ var get_date = module.exports.get_date = function(body) {
 	var wordy_date_re = /(first|second|third|fourth|fifth|sixth|seventh|eight|ninth|tenth|eleventh|twelvth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteeenth|nineteenth|twentieth|twenty first|twenty second|twenty third|twenty fourth|twenty fifth|twenty sixth|twenty seventh|twenty eigth|twenty ninth|thirtieth|thirty first) of (jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[^ ]*, (\d{4})/i;
 
 	var first_date_exec = first_date_re.exec(body),
-	first_date=null;
+	first_date='';
 	var first_date_string = first_date_exec ? first_date_exec[0]:null;
 	
 	if (num_date_re.exec(first_date_string)) {

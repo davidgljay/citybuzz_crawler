@@ -104,4 +104,20 @@ mocks.snsPublishParams = {
 
 mocks.body="Dec 3rd, 2015   FOR IMMEDIATE RELEASE The mayor of funkytown is getting down."
 
+//TODO: Update to reflect actual dynamoDB put params
+mocks.dynamo_body_put_params = 
+    {
+		Item:  {
+			path:{S:'www.test.gov/mayor/press_release'},
+			title:{S:'I have a title'},
+			body:{S:mocks.body},
+			crawled_on:null,
+			first_date:{S:new Date(2015,11,3)},
+			tags:{NS:["mayor","press_release"]}
+		},
+	    TableName: 'citybuzz_readings',
+	    ConditionalExpression:'attribute_not_exists("path")',
+	    ReturnConsumedCapacity: 'NONE'
+	};
+
 module.exports = mocks;
