@@ -13,8 +13,6 @@ describe("DynamoDB", function() {
         var result = dynamoDB.put_params(reading);
         result.Item.crawled_on = null;
         expect(result).toEqual(mocks.dynamo_body_put_params);
-        expect(result.Item.crawled_on).toEqual(mocks.dynamo_body_put_params.Item.crawled_on);
-        expect(result.Item.first_date).toEqual(mocks.dynamo_body_put_params.Item.first_date);
 	})
 
 	it ("should post to dynamoDB", function() {

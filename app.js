@@ -1,5 +1,8 @@
 var Crawl = require('./crawl'),
 process_urls = require('./process_urls'),
+process_body = require('./process_body'),
+dynamo = require('./api/dynamo'),
+// rds = require('./api/rds')
 logger=require('./logger.js');
 sns=require('./api/sns.js'),
 all = require("promised-io/promise").all,
@@ -8,8 +11,7 @@ count=0;
 var crawler = this.crawler = new Crawl();
 this.process_urls = process_urls;
 
-//TODO: Add separate process for pulling keytag items (ie first date, press release, etc.)
-//TODO: Add function for saving to dynamoDB.
+
 //TODO: Add function for saving to SQL.
 //TODO: Remove camelCase
 
@@ -35,5 +37,18 @@ var processAndPostUrls = function(urls, message) {
 }
 
 var processAndPostBody = function(title, body, message) {
-	
+	var metadata = process_body(body, message.tags);
+	var reading = {
+		path: message.domain + message.path,
+		title:title,
+		body: body,
+		crawled_on: new Date(),
+		first_date: metadata.first_date,
+		tags: metadata.tags
+
+	}
+	return all([
+			dynamo(reading)
+			// rds(reading)
+		])
 }
