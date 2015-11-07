@@ -14,7 +14,8 @@
     "underscore":"^1.8.3",
     "nock":"2.15.0",
     "dynamodb":"0.3.6",
-    "aws-sdk":"^2.2.10"
+    "aws-sdk":"^2.2.10",
+    "mysql":"2.8.0"
   },
   "author": "David Jay",
   "license": "MIT"

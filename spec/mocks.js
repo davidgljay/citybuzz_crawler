@@ -120,4 +120,6 @@ mocks.dynamo_body_put_params =
 	    ReturnConsumedCapacity: 'NONE'
 	};
 
+mocks.rds_query_params = "INSERT IGNORE INTO undefined.READINGS (TITLE, BODY, URL, TAGS, SITE_CODE, SITE_NAME, CRAWLED_ON, FIRST_DATE) VALUES ('I have a title', 'Dec 3rd, 2015   FOR IMMEDIATE RELEASE The mayor of funkytown is getting down.','www.test.gov/mayor/press_release', '[\\\"mayor\\\",\\\"press_release\\\"]', 'NYC', 'New York City', '2015-11-04 06:03:13', '2015-12-03 05:00:00);";
+
 module.exports = mocks;

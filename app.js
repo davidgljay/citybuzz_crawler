@@ -2,7 +2,7 @@ var Crawl = require('./crawl'),
 process_urls = require('./process_urls'),
 process_body = require('./process_body'),
 dynamo = require('./api/dynamo'),
-// rds = require('./api/rds')
+rds = require('./api/rds'),
 logger=require('./logger.js');
 sns=require('./api/sns.js'),
 all = require("promised-io/promise").all,
@@ -11,8 +11,6 @@ count=0;
 var crawler = this.crawler = new Crawl();
 this.process_urls = process_urls;
 
-
-//TODO: Add function for saving to SQL.
 //TODO: Remove camelCase
 
 module.exports.handler = function(event, context) {
@@ -21,7 +19,8 @@ module.exports.handler = function(event, context) {
 	crawler.get(message)
 	.then(function(crawl) {
 		all([
-				processAndPostUrls(crawl.urls, crawl.message)
+				processAndPostUrls(crawl.urls, crawl.message),
+				processAndPostBody(crawl.title, crawl.body, crawl.message)
 			], logger.reportError('url and body processing'))
 	}, logger.reportError('crawl'))
 	.then(function() {
@@ -49,6 +48,6 @@ var processAndPostBody = function(title, body, message) {
 	}
 	return all([
 			dynamo(reading)
-			// rds(reading)
+			rds(reading)
 		])
 }
