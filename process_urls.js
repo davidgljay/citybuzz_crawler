@@ -20,13 +20,13 @@ module.exports.process = function(urls, message) {
 		//Divide urls into batches of 100 and check them for diplucates.
 		var url_batch = url_copy.splice(0,99);
 		promiseArray.push(
-			checkUrlBatch(url_batch, message.whitelist)
-			.then(postUrlBatch, logger.reportError('checkUrlBatch'))
+			check_url_batch(url_batch, message.whitelist)
+			.then(post_url_batch, logger.reportError('check_url_batch'))
 			.then(function(unique_url_batch) {
 				var tinyDeferred = new Deferred();
 				deferred.resolve(unique_url_batch);
 				return deferred.promise;
-			}, logger.reportError('postUrlBatch'))
+			}, logger.reportError('post_url_batch'))
 		);
 	};
 
@@ -35,20 +35,20 @@ module.exports.process = function(urls, message) {
 		function(new_urls) {
 			//TODO: handle consistent formatting and make sure to pass on message.
 			deferred.resolve(_.flatten(new_urls));
-		}, logger.reportError('dedupePromiseArray'))
+		}, logger.reportError('dedupe_promise_array'))
 	return deferred.promise;
 }
 
-var checkUrlBatch = this.checkUrlBatch = function(url_batch, whitelist) {
+var check_url_batch = this.check_url_batch = function(url_batch, whitelist) {
 	var deferred = new Deferred;
 
 	//Only keep URLs that match the whitelist condition
 	url_batch = _.filter(url_batch, function(url) {
-		return checkWhitelist(url, whitelist);
+		return check_white_list(url, whitelist);
 	});
 
 	//Check urls against the DB of urls already being checked.
-	dynamodb.batchGetItem(getParams(url_batch), function(err, data) {
+	dynamodb.batchGetItem(get_params(url_batch), function(err, data) {
 		if (err) {
 			deferred.reject("Get in Dedupe error:" + err);
 		} else {
@@ -61,9 +61,9 @@ var checkUrlBatch = this.checkUrlBatch = function(url_batch, whitelist) {
 	return deferred.promise;
 };
 
-var postUrlBatch = this.postUrlBatch = function(url_batch) {
+var post_url_batch = this.post_url_batch = function(url_batch) {
 	var deferred = new Deferred;
-	dynamodb.batchWriteItem(putParams(url_batch), function(err, data) {
+	dynamodb.batchWriteItem(put_params(url_batch), function(err, data) {
 		if (err) {
 			deferred.reject("Post in Dedupe error:" + err);
 		} else {
@@ -73,7 +73,7 @@ var postUrlBatch = this.postUrlBatch = function(url_batch) {
 	return deferred.promise;
 };
 
-var getParams = this.getParams = function(get_urls) {
+var get_params = this.get_params = function(get_urls) {
 	var params = {
     	RequestItems: {
 	        citybuzz_urls: {
@@ -96,7 +96,7 @@ var getParams = this.getParams = function(get_urls) {
 	return params;
 };
 
-var putParams = this.putParams = function(urls) {
+var put_params = this.put_params = function(urls) {
 	var params = {
     	RequestItems: {
 	        citybuzz_urls: []
@@ -124,7 +124,7 @@ var putParams = this.putParams = function(urls) {
 *		"domain2.com":["/path3", "path4"]    
 * ]
 */
-var checkWhitelist = this.checkWhitelist = function(url, whitelist) {
+var check_white_list = this.check_white_list = function(url, whitelist) {
 	var spliturl = /([^http:\/\/][^\/]+)(.+)/.exec(url),
 	valid = false;
 	for (path in whitelist[spliturl[1]]) {

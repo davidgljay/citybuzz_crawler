@@ -4,63 +4,63 @@ mocks=require('./mocks');
 
 describe("Process_urls module", function() {
 	describe ("process_url function", function() {
-		var calledBatchGetItem, calledBatchWriteItem;
+		var called_batchGetItem, called_batchWriteItem;
 
 		beforeEach(function() {
-			calledBatchGetItem=false;
-			calledBatchWriteItem = false;
+			called_batchGetItem=false;
+			called_batchWriteItem = false;
 			process_urls = require('../process_urls');
 			process_urls.dynamodb.batchGetItem = function(params, callback) {
-					calledBatchGetItem = true;
-					callback(null, mocks.batchGetResponse);
+					called_batchGetItem = true;
+					callback(null, mocks.batch_get_response);
 				};
 			process_urls.dynamodb.batchWriteItem = function(params, callback) {
-					calledBatchWriteItem = true;
-					callback(null, mocks.batchGetResponse);
+					called_batchWriteItem = true;
+					callback(null, mocks.batch_get_response);
 				};
 		})
 
 		describe ("batchGetItems", function() {
 
 			it("should return parameters formatted for a dynamoDB get request.", function() {
-				expect(process_urls.getParams(mocks.urls)).toEqual(mocks.batchGetParams);
+				expect(process_urls.get_params(mocks.urls)).toEqual(mocks.batch_get_params);
 			})
 
 			it ("should make a batchGetItems call.", function(done) {
-				process_urls.checkUrlBatch(mocks.urls, mocks.whitelist).then(
+				process_urls.check_url_batch(mocks.urls, mocks.whitelist).then(
 					function(result) {
-						expect(calledBatchGetItem).toBe(true);
+						expect(called_batchGetItem).toBe(true);
 						done();
 					});
 			})	
 
 			it ("should return urls that are not yet present.", function(done) {
-				process_urls.checkUrlBatch(mocks.urls, mocks.whitelist).then(
+				process_urls.check_url_batch(mocks.urls, mocks.whitelist).then(
 					function(result) {
-						expect(calledBatchGetItem).toBe(true);
+						expect(called_batchGetItem).toBe(true);
 						expect(result[0]).toBe('www.another.url/forfun');
 						done();
 					});
 			})	
 		});
 
-		describe ("batchPutItems", function() {
+		describe ("batchWriteItems", function() {
 			it ("should return parameters formatted for a dynamoDB put request.", function() {
-				expect(process_urls.putParams([mocks.urls[2]])).toEqual(mocks.batchPutParams);
+				expect(process_urls.put_params([mocks.urls[2]])).toEqual(mocks.batch_put_params);
 			});
 
 			it ("should make a batchWriteItem call", function(done) {
-				process_urls.postUrlBatch([mocks.urls[2]]).then(
+				process_urls.post_url_batch([mocks.urls[2]]).then(
 					function(result) {
-						expect(calledBatchWriteItem).toBe(true);
+						expect(called_batchWriteItem).toBe(true);
 						done();
 					});
 			});
 
 			it ("should return urls that are not yet present.", function(done) {
-				process_urls.postUrlBatch([mocks.urls[2]]).then(
+				process_urls.post_url_batch([mocks.urls[2]]).then(
 					function(result) {
-						expect(calledBatchWriteItem).toBe(true);
+						expect(called_batchWriteItem).toBe(true);
 						expect(result[0]).toBe('www.another.url/forfun');
 						done();
 					});
@@ -82,15 +82,14 @@ describe("Process_urls module", function() {
 		describe ("should check urls against a whitelist", function() {
 
 			it ("should accept a valid URL", function() {
-				expect(process_urls.checkWhitelist(mocks.urls[1], mocks.event.records.Sns.Message.whitelist)).toBe(true);
+				expect(process_urls.check_white_list(mocks.urls[1], mocks.event.records.Sns.Message.whitelist)).toBe(true);
 			})
 
 			it("should reject an invalid URL", function() {
-				expect(process_urls.checkWhitelist("http://not.a.valid/url", mocks.event.records.Sns.Message.whitelist)).toBe(false);
+				expect(process_urls.check_white_list("http://not.a.valid/url", mocks.event.records.Sns.Message.whitelist)).toBe(false);
 			})
 
 		})
 	})
-
 });
 

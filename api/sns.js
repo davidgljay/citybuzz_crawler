@@ -4,23 +4,23 @@ all = require("promised-io/promise").all;
 
 var SNS = this.SNS = new AWS.SNS({apiVersion: '2010-03-31'});
 
-module.exports.publishUrls = function(urls,message) {
+module.exports.publish_urls = function(urls,message) {
 	//TODO: split url
 	var deferred = new Deferred(),
-	promiseArray = [];
+	promise_array = [];
 	for (var i=0; i<urls.length; i++) {
-		var publishDeferred = new Deferred();
-		SNS.publish(publishParams(message.domain, urls[i]),
+		var publish_deferred = new Deferred();
+		SNS.publish(publish_params(message.domain, urls[i]),
 			function(err, response) {
 				if (err) {
-					publishDeferred.reject(err);
+					publish_deferred.reject(err);
 				} else {
-					publishDeferred.resolve(response);
+					publish_deferred.resolve(response);
 				};
 		});
-		promiseArray.push(publishDeferred);
+		promise_array.push(publish_deferred);
 	};
-	all(promiseArray).then(
+	all(promise_array).then(
 		function(response) {
 			deferred.resolve(response)
 		}, function(err) {
@@ -29,7 +29,7 @@ module.exports.publishUrls = function(urls,message) {
 	return deferred.promise;
 } 
 
-var publishParams = this.publishParams = function(domain, path) {
+var publish_params = this.publish_params = function(domain, path) {
 	var message = {
 		domain: domain,
 		path:path

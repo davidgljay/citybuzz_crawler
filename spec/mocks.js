@@ -38,7 +38,7 @@ mocks.urls = [
 	"www.another.url/forfun"
 ]
 
-mocks.batchGetParams = {
+mocks.batch_get_params = {
     RequestItems: {
         citybuzz_urls: {
             Keys: [
@@ -61,7 +61,7 @@ mocks.batchGetParams = {
     ReturnConsumedCapacity: 'NONE'
 }
 
-mocks.batchGetResponse = {
+mocks.batch_get_response = {
   "Responses": {
     "citybuzz_urls": [
       {
@@ -79,7 +79,7 @@ mocks.batchGetResponse = {
   "UnprocessedKeys": {}
 }
 
-mocks.batchPutParams = {
+mocks.batch_put_params = {
     RequestItems:{
        citybuzz_urls:[ 
            {
@@ -97,7 +97,7 @@ mocks.batchPutParams = {
     ReturnItemCollectionMetrics: 'NONE'
 };
 
-mocks.snsPublishParams = {
+mocks.sns_publish_params = {
   Message: '{"domain":"www.another.url","path":"/forfun"}',
   TopicArn: 'arn:aws:sns:us-east-1:663987893806:citybuzz_urls'
 };

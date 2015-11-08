@@ -1,23 +1,23 @@
-var sns = require('../sns.js'),
+var sns = require('../api/sns.js'),
 mocks = require('./mocks'),
-publishCalled = false;
+publish_called = false;
 
 describe("Sns", function() {
 	beforeEach(function() {
-		publishCalled = false;
+		publish_called = false;
 		sns.SNS.publish = function(params, callback) {
-			publishCalled = true;
+			publish_called = true;
 			callback(null,'Success');
 		};
 	});
 
 	it ("should format SNS publish parameters correctly.", function() {
-		expect(sns.publishParams('www.another.url','/forfun')).toEqual(mocks.snsPublishParams);
+		expect(sns.publish_params('www.another.url','/forfun')).toEqual(mocks.sns_publish_params);
 	});
 
 	it ("should call publish.", function(done) {
-		sns.publishUrls(mocks.urls, mocks.event.records.Sns.Message).then(function() {
-			expect(publishCalled).toBe(true);
+		sns.publish_urls(mocks.urls, mocks.event.records.Sns.Message).then(function() {
+			expect(publish_called).toBe(true);
 			done();
 		})
 	});

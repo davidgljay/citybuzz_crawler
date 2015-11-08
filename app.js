@@ -4,14 +4,12 @@ process_body = require('./process_body'),
 dynamo = require('./api/dynamo'),
 rds = require('./api/rds'),
 logger=require('./logger.js');
-sns=require('./api/sns.js'),
+sns=require('./api/sns'),
 all = require("promised-io/promise").all,
 count=0;
 
 var crawler = this.crawler = new Crawl();
 this.process_urls = process_urls;
-
-//TODO: Remove camelCase
 
 module.exports.handler = function(event, context) {
 	var self=this;
@@ -19,8 +17,8 @@ module.exports.handler = function(event, context) {
 	crawler.get(message)
 	.then(function(crawl) {
 		all([
-				processAndPostUrls(crawl.urls, crawl.message),
-				processAndPostBody(crawl.title, crawl.body, crawl.message)
+				process_and_post_urls(crawl.urls, crawl.message),
+				process_body(crawl.title, crawl.body, crawl.message)
 			], logger.reportError('url and body processing'))
 	}, logger.reportError('crawl'))
 	.then(function() {
@@ -30,12 +28,12 @@ module.exports.handler = function(event, context) {
 	});
 };
 
-var processAndPostUrls = function(urls, message) {
+var process_and_post_urls = function(urls, message) {
 	return process_urls.process(urls, message)
 		.then(sns.publish_urls, logger.reportError('process_urls'))
 }
 
-var processAndPostBody = function(title, body, message) {
+var process_body = function(title, body, message) {
 	var metadata = process_body(body, message.tags);
 	var reading = {
 		path: message.domain + message.path,
@@ -47,7 +45,7 @@ var processAndPostBody = function(title, body, message) {
 
 	}
 	return all([
-			dynamo(reading)
+			dynamo(reading),
 			rds(reading)
 		])
 }
