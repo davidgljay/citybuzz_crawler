@@ -13,7 +13,7 @@ this.process_urls = process_urls;
 
 module.exports.handler = function(event, context) {
 	var self=this;
-	var message= this.message = event.Records.Sns.Message;
+	var message= this.message = event.Records[0].Sns.Message;
 	crawler.get(message)
 	.then(function(crawl) {
 		all([
