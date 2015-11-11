@@ -16,7 +16,7 @@ describe("Sns", function() {
 	});
 
 	it ("should call publish.", function(done) {
-		sns.publish_urls(mocks.urls, mocks.event.records.Sns.Message).then(function() {
+		sns.publish_urls(mocks.urls, mocks.event.Records[0].Sns.Message).then(function() {
 			expect(publish_called).toBe(true);
 			done();
 		})

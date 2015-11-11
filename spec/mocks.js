@@ -17,7 +17,7 @@ mocks.whitelist ={
                 "www.another.url":["/forfun"]
             };
 mocks.event = {
-		Records: {
+		Records: [{
 			Sns: {
 				Message: {
 					domain:mocks.domain,
@@ -29,7 +29,7 @@ mocks.event = {
           
 				}
 			}
-		}
+		}]
 	}
 
 mocks.urls = [

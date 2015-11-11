@@ -69,7 +69,7 @@ describe("Process_urls module", function() {
 
 		describe("overall", function() {
 			it("should return a list of new urls", function(done) {
-				process_urls.process(mocks.urls, mocks.event.records.Sns.Message).then(
+				process_urls.process(mocks.urls, mocks.event.Records[0].Sns.Message).then(
 					function(result) {
 						expect(result[0]).toBe('www.another.url/forfun');
 						done();
@@ -82,11 +82,11 @@ describe("Process_urls module", function() {
 		describe ("should check urls against a whitelist", function() {
 
 			it ("should accept a valid URL", function() {
-				expect(process_urls.check_white_list(mocks.urls[1], mocks.event.records.Sns.Message.whitelist)).toBe(true);
+				expect(process_urls.check_white_list(mocks.urls[1], mocks.event.Records[0].Sns.Message.whitelist)).toBe(true);
 			})
 
 			it("should reject an invalid URL", function() {
-				expect(process_urls.check_white_list("http://not.a.valid/url", mocks.event.records.Sns.Message.whitelist)).toBe(false);
+				expect(process_urls.check_white_list("http://not.a.valid/url", mocks.event.Records[0].Sns.Message.whitelist)).toBe(false);
 			})
 
 		})

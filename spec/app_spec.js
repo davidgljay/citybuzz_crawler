@@ -40,7 +40,7 @@ describe("App", function() {
 
 	it ("should fetch the url in the message", function() {
 		app.handler(mocks.event);
-		expect(get_message).toBe(mocks.event.records.Sns.Message);
+		expect(get_message).toBe(mocks.event.Records[0].Sns.Message);
 	})
 
 	// it ("should dedupe URLs after receiving them", function() {
