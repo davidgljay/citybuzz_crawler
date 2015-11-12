@@ -24,8 +24,8 @@ module.exports.process = function(urls, message) {
 			.then(post_url_batch, logger.reportError('check_url_batch'))
 			.then(function(unique_url_batch) {
 				var tinyDeferred = new Deferred();
-				deferred.resolve(unique_url_batch);
-				return deferred.promise;
+				tinyDeferred.resolve(unique_url_batch);
+				return tinyDeferred.promise;
 			}, logger.reportError('post_url_batch'))
 		);
 	};
@@ -33,6 +33,7 @@ module.exports.process = function(urls, message) {
 	//Wait until the batch is 
 	all(promiseArray).then(
 		function(new_urls) {
+			console.log("Done processing urls");
 			//TODO: handle consistent formatting and make sure to pass on message.
 			deferred.resolve(_.flatten(new_urls));
 		}, logger.reportError('dedupe_promise_array'))
@@ -41,7 +42,7 @@ module.exports.process = function(urls, message) {
 
 var check_url_batch = this.check_url_batch = function(url_batch, whitelist) {
 	var deferred = new Deferred;
-
+	console.log("Checking url batch");
 	//Only keep URLs that match the whitelist condition
 	url_batch = _.filter(url_batch, function(url) {
 		return check_white_list(url, whitelist);

@@ -4,7 +4,8 @@ logger = require('../logger.js'),
 Deferred = require('promised-io').Deferred;
 
 module.exports = function(reading) {
-  var deferred = new Deferred();
+  var deferred = new Deferred(),
+  self=this;
 
   var connection_vars = {
       host     : process.env.SQL_HOST,

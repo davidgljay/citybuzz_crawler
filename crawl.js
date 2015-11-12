@@ -34,6 +34,7 @@ Crawl.prototype.get = function(message) {
 			var parsedUrls = parse_url(body);
 			var cleanedUrls = clean_urls(parsedUrls, domain, path);
 			var unfluffed = unfluff(body.toString('utf-8'),'en');
+			console.log("Resolving crawler get");
 			deferred.resolve(
 				{
 					domain:domain,
@@ -63,7 +64,9 @@ var clean_urls = function(urls, domain, path) {
 	var clean_urls = [];
 	//Put URLs into a consistent format.
 	for (var i = urls.length - 1; i >= 0; i--) {
-		if (urls[i][0] == "/")  {
+		if (urls[i] == '#')
+			continue;
+		if (urls[i].length > 0 && urls[i][0] == "/")  {
 			clean_urls.push(domain + urls[i]);
 		} else {
 			var re = /[^http:\/\/].+/

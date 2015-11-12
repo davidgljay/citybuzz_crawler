@@ -6,7 +6,7 @@ var dynamodb = this.dynamodb = new AWS.DynamoDB({apiVersion: '2015-02-02'})
 
 module.exports = function(reading) {
 	var deferred=new Deferred();
-	dynamodb.PutRequest(put_params(reading)), function(err, response) {
+	dynamodb.putItem(put_params(reading)), function(err, response) {
 		if (err) {
 			deferred.reject(err);
 		} else {

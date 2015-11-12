@@ -10,11 +10,13 @@ module.exports.publish_urls = function(urls,message) {
 	promise_array = [];
 	for (var i=0; i<urls.length; i++) {
 		var publish_deferred = new Deferred();
+		console.log("Publishing to SNS.");
 		SNS.publish(publish_params(message.domain, urls[i]),
 			function(err, response) {
 				if (err) {
 					publish_deferred.reject(err);
 				} else {
+					console.log("Published to SNS");
 					publish_deferred.resolve(response);
 				};
 		});

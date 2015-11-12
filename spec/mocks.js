@@ -122,4 +122,43 @@ mocks.dynamo_body_put_params =
 
 mocks.rds_query_params = "INSERT IGNORE INTO undefined.READINGS (TITLE, BODY, URL, TAGS, SITE_CODE, SITE_NAME, CRAWLED_ON, FIRST_DATE) VALUES ('I have a title', 'Dec 3rd, 2015   FOR IMMEDIATE RELEASE The mayor of funkytown is getting down.','www.test.gov/mayor/press_release', '[\\\"mayor\\\",\\\"press_release\\\"]', 'NYC', 'New York City', '2015-11-04 06:03:13', '2015-12-03 05:00:00);";
 
+mocks.full_sns_test = {
+  "Records": [
+    {
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:EXAMPLE",
+      "EventSource": "aws:sns",
+      "Sns": {
+        "SignatureVersion": "1",
+        "Timestamp": "1970-01-01T00:00:00.000Z",
+        "Signature": "EXAMPLE",
+        "SigningCertUrl": "EXAMPLE",
+        "MessageId": "95df01b4-ee98-5cb9-9903-4c221d41eb5e",
+        "Message": {
+          "domain":"www1.nyc.gov",
+          "path":"/office_of_the_mayor",
+                    "whitelist": [{"www1.nyc.gov":["/office_of_the_mayor"]}],
+                    "tags":
+                        {"mayor":"mayor"}
+          
+        },
+        "MessageAttributes": {
+          "Test": {
+            "Type": "String",
+            "Value": "TestString"
+          },
+          "TestBinary": {
+            "Type": "Binary",
+            "Value": "TestBinary"
+          }
+        },
+        "Type": "Notification",
+        "UnsubscribeUrl": "EXAMPLE",
+        "TopicArn": "arn:aws:sns:EXAMPLE",
+        "Subject": "TestInvoke"
+      }
+    }
+  ]
+}
+
 module.exports = mocks;

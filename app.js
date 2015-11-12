@@ -16,9 +16,10 @@ module.exports.handler = function(event, context) {
 	var message= this.message = event.Records[0].Sns.Message;
 	crawler.get(message)
 	.then(function(crawl) {
+		console.log( "After crawler get:" + crawl);
 		all([
 				process_and_post_urls(crawl.urls, crawl.message),
-				process_body(crawl.title, crawl.body, crawl.message)
+				process_and_post_body(crawl.title, crawl.body, crawl.message)
 			], logger.reportError('url and body processing'))
 	}, logger.reportError('crawl'))
 	.then(function() {
@@ -29,11 +30,12 @@ module.exports.handler = function(event, context) {
 };
 
 var process_and_post_urls = function(urls, message) {
+	console.log("Processing and posting urls");
 	return process_urls.process(urls, message)
 		.then(sns.publish_urls, logger.reportError('process_urls'))
 }
 
-var process_body = function(title, body, message) {
+var process_and_post_body = function(title, body, message) {
 	var metadata = process_body(body, message.tags);
 	var reading = {
 		path: message.domain + message.path,
