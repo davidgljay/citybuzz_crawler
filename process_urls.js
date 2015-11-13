@@ -94,6 +94,7 @@ var get_params = this.get_params = function(get_urls) {
 			}
 		})
 	};
+	console.log("get_params:" + params);
 	return params;
 };
 
