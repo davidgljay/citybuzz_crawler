@@ -21,6 +21,7 @@ module.exports = function(reading) {
   self.connection.connect(function(err) {
     if (err) {
       deferred.reject('SQL Connection Error:' + err);
+      return;
     }
    
     console.log('SQL connected as id ' + self.connection.threadId);
