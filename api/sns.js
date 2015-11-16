@@ -9,6 +9,7 @@ module.exports.publish_urls = function(urls,message) {
 	//TODO: split url
 	var deferred = new Deferred(),
 	promise_array = [];
+	console.log("publishing urls:" + urls);
 	for (var i=0; i<urls.length; i++) {
 		var publish_deferred = new Deferred();
 		SNS.publish(publish_params(message.domain, urls[i]),
@@ -16,6 +17,7 @@ module.exports.publish_urls = function(urls,message) {
 				if (err) {
 					publish_deferred.reject(err);
 				} else {
+					console.log("SNS posted:" + response);
 					publish_deferred.resolve(response);
 				};
 		});

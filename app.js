@@ -34,6 +34,7 @@ var process_and_post_urls = function(urls, message) {
 	return process_urls.process(urls, message)
 		.then(
 			function(urls) {
+				console.log("About to publish urls");
 				return sns.publish_urls(urls,message);
 			}, logger.reportError('process_urls'))
 }

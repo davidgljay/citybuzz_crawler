@@ -85,6 +85,10 @@ describe("Process_urls module", function() {
 				expect(process_urls.check_white_list(mocks.urls[1], mocks.event.Records[0].Sns.Message.whitelist)).toBe(true);
 			})
 
+			it ("should accept a valid https URL", function() {
+				expect(process_urls.check_white_list("https://www.stuff.and/things", mocks.event.Records[0].Sns.Message.whitelist)).toBe(true);
+			})
+
 			it("should reject an invalid URL", function() {
 				expect(process_urls.check_white_list("http://not.a.valid/url", mocks.event.Records[0].Sns.Message.whitelist)).toBe(false);
 			})

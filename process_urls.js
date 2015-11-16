@@ -15,6 +15,8 @@ module.exports.process = function(urls, message) {
 	var promiseArray = [],
 	url_copy = urls.slice();
 
+	console.log("Pre cleaned URLs:" + JSON.stringify(urls));
+
 
 	while(url_copy.length>0) {
 		//Divide urls into batches of 100 and check them for diplucates.
@@ -34,7 +36,6 @@ module.exports.process = function(urls, message) {
 	all(promiseArray).then(
 		function(new_urls) {
 			console.log("Done processing urls");
-			//TODO: handle consistent formatting and make sure to pass on message.
 			deferred.resolve(_.flatten(new_urls));
 		}, logger.reportError('dedupe_promise_array'))
 	return deferred.promise;
@@ -42,35 +43,46 @@ module.exports.process = function(urls, message) {
 
 var check_url_batch = this.check_url_batch = function(url_batch, whitelist) {
 	var deferred = new Deferred;
-	console.log("Checking url batch");
+	console.log("Checking url batch:" + url_batch);
 	//Only keep URLs that match the whitelist condition
 	url_batch = _.filter(url_batch, function(url) {
 		return check_white_list(url, whitelist);
 	});
+	console.log("After whitelist check:" + url_batch);
 
-	//Check urls against the DB of urls already being checked.
-	dynamodb.batchGetItem(get_params(url_batch), function(err, data) {
-		if (err) {
-			deferred.reject("Get in Dedupe error:" + err);
-		} else {
-			var existingUrls = _.map(data.Responses.citybuzz_urls,function(response) {
-				return response.reading_url.S;
-			});
-			deferred.resolve(_.difference(url_batch, existingUrls));
-		}
-	});
+	if (url_batch.length > 0) {
+		//Check urls against the DB of urls already being checked.
+		dynamodb.batchGetItem(get_params(url_batch), function(err, data) {
+			if (err) {
+				deferred.reject("Get in Dedupe error:" + err);
+			} else {
+				var existingUrls = _.map(data.Responses.citybuzz_urls,function(response) {
+					return response.reading_url.S;
+				});
+				deferred.resolve(_.difference(url_batch, existingUrls));
+			}
+		});		
+	} else {
+		deferred.resolve([]);
+	}
+
 	return deferred.promise;
 };
 
 var post_url_batch = this.post_url_batch = function(url_batch) {
 	var deferred = new Deferred;
-	dynamodb.batchWriteItem(put_params(url_batch), function(err, data) {
-		if (err) {
-			deferred.reject("Post in Dedupe error:" + err);
-		} else {
-			deferred.resolve(url_batch);
-		}
-	});
+	console.log("Posting URL batch:" + url_batch);
+	if (url_batch.length > 0) {
+		dynamodb.batchWriteItem(put_params(url_batch), function(err, data) {
+			if (err) {
+				deferred.reject("Post in Dedupe error:" + err);
+			} else {
+				deferred.resolve(url_batch);
+			}
+		});	
+	} else {
+		deferred.resolve([]);
+	}
 	return deferred.promise;
 };
 
@@ -127,8 +139,12 @@ var put_params = this.put_params = function(urls) {
 * ]
 */
 var check_white_list = this.check_white_list = function(url, whitelist) {
-	var spliturl = /([^http:\/\/][^\/]+)(.+)/.exec(url),
+	console.log(url);
+	var spliturl = /([^http(s)?:\/\/][^\/]+)(.+)/.exec(url),
 	valid = false;
+
+	console.log('spliturl:' + spliturl[2]);
+
 	for (path in whitelist[spliturl[1]]) {
 		if (spliturl[2].match(whitelist[spliturl[1]][path])) {
 			valid = true;
