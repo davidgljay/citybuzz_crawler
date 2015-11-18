@@ -31,7 +31,7 @@ describe("Process_body", function() {
 	describe ("get_tags", function() {
 		it ("should look for tags based on a regex", function() {
 			var tags = {
-				"tag":/tag/
+				"tag":"tag"
 			};
 			var body = "Should find a tag";
 
@@ -55,8 +55,8 @@ describe("Process_body", function() {
 		it ("should return multiple tag results", function() {
 			var tags = {
 				"tag":"tag",
-				"best":/best/
-			};
+				"best":"best"
+				};
 			var body = "tags are the best";
 			var result = [
 			"tag","best"];
@@ -76,8 +76,8 @@ describe("Process_body", function() {
 
 	it ("should return body and tags in the proper format", function() {
 		var tags = {
-			"mayor":"",
-			"press_release":/FOR\sIMMEDIATE\sRELEASE/i
+			"mayor":"mayor",
+			"press_release":"FOR IMMEDIATE RELEASE"
 		}
 
 		var result = {

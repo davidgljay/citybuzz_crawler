@@ -8,10 +8,7 @@ module.exports = function(body, tags) {
 var get_tags = module.exports.get_tags = function(body, tags) {
 	var tag_list = [];
 	for (tag in tags) {
-		if (typeof tags[tag] == 'string' && body.indexOf(tags[tag]) > -1)  {
-			tag_list.push(tag);
-		} else if (typeof tags[tag] == 'object' && tags[tag].exec(body)) {
-			//TODO: figure out how to test if this object is a regex.
+		if (new RegExp(tags[tag], 'i').exec(body)) {
 			tag_list.push(tag);
 		}
 	}

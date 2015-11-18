@@ -36,11 +36,11 @@ module.exports.handler = function(event, context) {
 var process_and_post_urls = function(urls, message) {
 	console.log("Processing and posting urls");
 	return process_urls.process(urls, message)
-		// .then(
-		// 	function(urls) {
-		// 		console.log("About to publish urls:" + urls);
-		// 		return sns.publish_urls(urls,message);
-		// 	}, logger.reportError('process_urls'))
+		.then(
+			function(urls) {
+				console.log("About to publish urls:" + urls);
+				return sns.publish_urls(urls,message);
+			}, logger.reportError('process_urls'))
 }
 
 var process_and_post_body = function(title, body, message) {
