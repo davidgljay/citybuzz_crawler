@@ -1,5 +1,4 @@
 var AWS = require('aws-sdk'),
-logger = require('../logger'),
 Deferred = require('promised-io').Deferred;
 
 var dynamodb = this.dynamodb = new AWS.DynamoDB({apiVersion: '2015-02-02'})
@@ -9,7 +8,7 @@ module.exports = function(reading) {
 	console.log("Preparing to post reading to dynamo");
 	//TODO: Test dynamoDB push to this db, verify that it's happening
 	//TODO: Set up RDS.
-	dynamodb.putItem(put_params(reading)), function(err, response) {
+	dynamodb.putItem(put_params(reading), function(err, response) {
 		if (err) {
 			console.log("Error posting reading to dynamo");
 			deferred.reject(err);
@@ -17,7 +16,7 @@ module.exports = function(reading) {
 			console.log("Reading post to dynamo successful");
 			deferred.resolve();
 		}
-	};
+	});
 	return deferred.promise;
 }
 
@@ -27,13 +26,12 @@ var put_params = module.exports.put_params = function(reading) {
            	path:{S:reading.path},
            	title:{S:reading.title},
            	body:{S:reading.body},
-           	crawled_on:{S:new Date()},
+           	crawled_on:{S:new Date().toString()},
            	first_date:{S:reading.first_date},
-           	tags:{NS:reading.tags}
+           	tags:{SS:reading.tags}
           }
 	    ,
 	    TableName: 'citybuzz_readings',
-	    ConditionalExpression:'attribute_not_exists("path")',
 	    ReturnConsumedCapacity: 'NONE'
 	};
 };
