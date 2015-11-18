@@ -5,7 +5,7 @@ var dynamodb = this.dynamodb = new AWS.DynamoDB({apiVersion: '2015-02-02'})
 
 module.exports = function(reading) {
 	var deferred=new Deferred();
-	console.log("Preparing to post reading to dynamo");
+	console.log("Preparing to post reading to dynamodb");
 	//TODO: Test dynamoDB push to this db, verify that it's happening
 	//TODO: Set up RDS.
 	dynamodb.putItem(put_params(reading), function(err, response) {
@@ -21,17 +21,22 @@ module.exports = function(reading) {
 }
 
 var put_params = module.exports.put_params = function(reading) {
-	return {
+	var post = {
            Item:  {
            	path:{S:reading.path},
            	title:{S:reading.title},
            	body:{S:reading.body},
-           	crawled_on:{S:new Date().toString()},
-           	first_date:{S:reading.first_date},
-           	tags:{SS:reading.tags}
+           	crawled_on:{S:new Date().toString()}
           }
 	    ,
 	    TableName: 'citybuzz_readings',
 	    ReturnConsumedCapacity: 'NONE'
 	};
+	if (reading.tags.length>0) {
+		post.Item.tags = {SS:reading.tags};
+	};
+	if (reading.first_date) {
+		post.Item.first_date = {S:reading.first_date};
+	}
+	return post;
 };

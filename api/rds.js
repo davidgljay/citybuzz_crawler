@@ -3,6 +3,8 @@ var mysql = require("mysql"),
 logger = require('../logger.js'),
 Deferred = require('promised-io').Deferred;
 
+//TODO: handle SQL with a separate function, creating all of these connections is expensive.
+
 module.exports = function(reading) {
   var deferred = new Deferred(),
   self=this;
@@ -18,6 +20,7 @@ module.exports = function(reading) {
 
   self.connection = mysql.createConnection(connection_vars);
 
+  console.log("Connecting to SQL: " + JSON.stringify(connection_vars));
   self.connection.connect(function(err) {
     if (err) {
       deferred.reject('SQL Connection Error:' + err);
@@ -25,14 +28,17 @@ module.exports = function(reading) {
     }
    
     console.log('SQL connected as id ' + self.connection.threadId);
+    console.log("Posting:" + query_params(reading));
     self.connection.query(query_params(reading), function(err, rows, fields) {
         if (err) {
           deferred.reject("SQL Post Error:" + err);
+        } else {
+          console.log("SQL Post successful!");
+          deferred.resolve();
         }
-        deferred.resolve();
     });
-  return deferred.promise;
   });
+  return deferred.promise;
 };
 
 var query_params = module.exports.query_params = function(reading) {
@@ -40,7 +46,7 @@ var query_params = module.exports.query_params = function(reading) {
 	return "INSERT IGNORE INTO " + process.env.SQL_DB + ".READINGS (TITLE, BODY, URL, TAGS, SITE_CODE, SITE_NAME, CRAWLED_ON, FIRST_DATE) " + 
 	"VALUES (" + mysql.escape(reading.title) + ", " + mysql.escape(reading.body) + "," + mysql.escape(reading.path) + ", " + 
   mysql.escape(JSON.stringify(reading.tags)) + ", " + mysql.escape(reading.site_code) + ", " + mysql.escape(reading.site_name) + ", '" + 
-	new Date().to_msql_format() + "', '" + (reading.first_date ? reading.first_date.to_msql_format():'') + ");";
+	new Date().to_msql_format() + "', " + (reading.first_date ? "'" + reading.first_date.to_msql_format() + "'":'NULL') + ");";
 }
 
 /**
