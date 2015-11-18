@@ -6,10 +6,13 @@ rds = require('./api/rds'),
 logger=require('./logger.js');
 sns=require('./api/sns'),
 all = require("promised-io/promise").all,
+config = require("./config"),
 count=0;
 
 var crawler = this.crawler = new Crawl();
 this.process_urls = process_urls;
+
+config();
 
 module.exports.handler = function(event, context) {
 	var self=this;
