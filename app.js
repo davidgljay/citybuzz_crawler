@@ -17,12 +17,13 @@ module.exports.handler = function(event, context) {
 	crawler.get(message)
 	.then(function(crawl) {
 		console.log( "After crawler get:" + crawl);
-		all([
+		return all([
 				process_and_post_urls(crawl.urls, crawl.message),
 				process_and_post_body(crawl.title, crawl.body, crawl.message)
 			], logger.reportError('url and body processing'))
 	}, logger.reportError('crawl'))
 	.then(function() {
+		console.log("Handler success");
 		context.succeed();
 	}, function(err) {
 		context.fail(err);
@@ -34,7 +35,7 @@ var process_and_post_urls = function(urls, message) {
 	return process_urls.process(urls, message)
 		.then(
 			function(urls) {
-				console.log("About to publish urls");
+				console.log("About to publish urls:" + urls);
 				return sns.publish_urls(urls,message);
 			}, logger.reportError('process_urls'))
 }
@@ -51,7 +52,7 @@ var process_and_post_body = function(title, body, message) {
 
 	}
 	return all([
-			dynamo(reading),
-			rds(reading)
+			dynamo(reading)
+			// rds(reading)
 		])
 }

@@ -1,35 +1,32 @@
 var AWS = require('aws-sdk'),
 Deferred = require('promised-io').Deferred,
-all = require("promised-io/promise").all;
+async = require('async');
 
 var SNS = this.SNS = new AWS.SNS({apiVersion: '2010-03-31'});
 
 
 module.exports.publish_urls = function(urls,message) {
 	//TODO: split url
-	var deferred = new Deferred(),
-	promise_array = [];
+	var deferred = new Deferred();
 	console.log("publishing urls:" + urls);
-	for (var i=0; i<urls.length; i++) {
-		var publish_deferred = new Deferred();
-		SNS.publish(publish_params(message.domain, urls[i]),
+	async.map(urls, function(url, callback) {
+		SNS.publish(publish_params(message.domain, url),
 			function(err, response) {
 				if (err) {
-					publish_deferred.reject(err);
+					console.log("Err in SNS publish:" + err);
+					callback(err)
 				} else {
-					console.log("SNS posted:" + response);
-					publish_deferred.resolve(response);
+					console.log("SNS Post Success:" + JSON.stringify(response));
+					callback(null, response);
 				};
 		});
-		promise_array.push(publish_deferred);
-	};
-	console.log("promise_array length:" + promise_array.length)
-	all(promise_array).then(
-		function(response) {
-			deferred.resolve(response)
-		}, function(err) {
-			deferred.reject("SNS Publish:" + err);
-		});
+	}, function(err, results) {
+		if (err) {
+			deferred.reject(err);
+		} else {
+			deferred.resolve(results);
+		}
+	});
 	return deferred.promise;
 } 
 

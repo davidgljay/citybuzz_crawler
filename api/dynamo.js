@@ -6,10 +6,15 @@ var dynamodb = this.dynamodb = new AWS.DynamoDB({apiVersion: '2015-02-02'})
 
 module.exports = function(reading) {
 	var deferred=new Deferred();
+	console.log("Preparing to post reading to dynamo");
+	//TODO: Test dynamoDB push to this db, verify that it's happening
+	//TODO: Set up RDS.
 	dynamodb.putItem(put_params(reading)), function(err, response) {
 		if (err) {
+			console.log("Error posting reading to dynamo");
 			deferred.reject(err);
 		} else {
+			console.log("Reading post to dynamo successful");
 			deferred.resolve();
 		}
 	};

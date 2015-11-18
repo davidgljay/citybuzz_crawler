@@ -137,7 +137,7 @@ mocks.full_sns_test = {
         "Message": {
           "domain":"www1.nyc.gov",
           "path":"/office-of-the-mayor",
-                    "whitelist": [{"www1.nyc.gov":["/office-of-the-mayor"]}],
+                    "whitelist": {"www1.nyc.gov":["/office-of-the-mayor"]},
                     "tags":
                         {"mayor":"mayor"}
           
